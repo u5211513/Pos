@@ -75,6 +75,7 @@
                           <input type="hidden" name="branch" id="branch" value="<?php echo $_POST["branch"];?>">
                           <input type="hidden" name="monthselected" id="monthselected" value="<?php echo $_POST["monthselected"];?>">
                           <input type="hidden" name="statusselected" id="statusselected" value="<?php echo $_POST["statusselected"];?>">
+                          <input type="hidden" name="yearselected" id="yearselected" value="<?php echo $_POST["yearselected"];?>">
                           <input type="hidden" name="report" id="report" value="Detail">
               </form>
     </nav>  

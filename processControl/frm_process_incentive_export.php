@@ -74,6 +74,7 @@ if($typereport == 'Detail'){
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
+
 $spreadSheet = new Spreadsheet();
 $spreadSheet->removeSheetByIndex(0);
 
@@ -196,7 +197,7 @@ $file_export= "SALE_INCENTIVE_".date("dmY_Hs");
 header('Content-Type: application/vnd.ms-excel');
 header('Content-Disposition: attachment;filename="'.$file_export.'.xlsx"');
 header('Cache-Control: max-age=0');
- 
+
 $writer->save('php://output');
 exit(); 
 
