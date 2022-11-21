@@ -1,0 +1,1 @@
+<script>location.replace('frm_login.php');</script>
