@@ -29,6 +29,7 @@
         $query_DEP      = " SELECT * from TB_DEPT";  
         $query_com      = " SELECT *  from  TB_COMPANY";  
         $query_position = " SELECT *  from  TB_POSITION";  
+        $query_rbranch = " SELECT *  from  SET_BRANCH";
 
         if(isset($_GET["action"]) == "EDIT"){
             $USER_ID    = $_GET["USER_ID"];
@@ -163,52 +164,86 @@
             <div class="row" id="div-message">  </div> 
             </div>  
             <?php if($data_id != ""){  ?> 
-                <form id="frm_img" name="frm_img" method="post" action="../processControl/frm_process_staff.php" enctype="multipart/form-data">  
-                    <section class="col-lg-6 connectedSortable">
-                        <div class="card card-primary">
-                            <div class="card-header">
-                                <h3 class="card-title">  เพิ่มสิทธิการใช้งาน  </h3>
-                            </div> 
-                            <div class="card-body"> 
-                                <!-- <div class="row form-group">
-                                    <label class="col-sm-2">   Action  </label>
-                                    <label class="col-sm-2">  
-                                        <input type="checkbox" id="Action_Create" name="Action_Create"> Create  
-                                    </label>
-                                    <label class="col-sm-2"> 
-                                        <input type="checkbox" id="Action_Edit" name="Action_Edit"> Edit 
-                                    </label>
-                                    <label class="col-sm-3">  
-                                        <input type="checkbox" id="Action_No" name="Action_No"> No 
-                                    </label> 
-                                </div>  -->
-                                <div class="row form-group">
-                                    <label class="col-sm-4">เพิ่มสาขาที่ดู</label> 
-                                    <div class="col-sm-5"> 
-                                        <?php foreach ($conn_1->query($query_DEP) as $dep) {
-                                            $query_action   = " SELECT * from TB_ACTION  a  
-                                            inner join TB_DEPT b on a.A_DEP = b.DEPTID  where a.USERID = '".$USER_ID."'  and   a.A_DEP = '".$dep["DEPTID"]."'";  
-                                            $getDep         = $conn_1->query($query_action);
-                                            $DepData        = $getDep->fetch();
-                                            
-                                                if(isset($DepData["DEPTID"])){
-                                                    $check  = "checked";
-                                                }else{  $check  = "";}
-                                            ?> 
-                                            <p><input type="checkbox" id="depview[]" name="depview[]" <?php echo $check;?>  value="<?php echo $dep["DEPTID"];?>" style="width:20px; height:20px;"> <?php echo  $dep["DEPT_NAME"]?> </p>
-                                        <?php } ?> 
+                <div class="row">
+                    <div class="col-md-auto w-50">
+                        <form id="frm_img" name="frm_img" method="post" action="../processControl/frm_process_staff.php" enctype="multipart/form-data">
+                            <section class="col">
+                                <div class="card card-primary">
+                                    <div class="card-header">
+                                        <h3 class="card-title">  เพิ่มสิทธิการใช้งาน  </h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <label>เพิ่ม Department ที่ดู</label>
+                                            </div>
+                                            <div class="col-md-auto pt-1">
+                                                <?php foreach ($conn_1->query($query_DEP) as $dep) {
+                                                    $query_action   = " SELECT * from TB_ACTION  a  
+                                                    inner join TB_DEPT b on a.A_DEP = b.DEPTID  where a.USERID = '".$USER_ID."'  and   a.A_DEP = '".$dep["DEPTID"]."'";  
+                                                    $getDep         = $conn_1->query($query_action);
+                                                    $DepData        = $getDep->fetch();
+                                                    
+                                                        if(isset($DepData["DEPTID"])){
+                                                            $check  = "checked";
+                                                        }else{  $check  = "";}
+                                                    ?> 
+                                                    <p><input type="checkbox" id="depview[]" name="depview[]" <?php echo $check;?>  value="<?php echo $dep["DEPTID"];?>" style="width:20px; height:20px;"> <?php echo  $dep["DEPT_NAME"]?> </p>
+                                                <?php } ?> 
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-auto w-100">
+                                                <input type="hidden" name="mode" id="mode" value="INDEPVIEW"> 
+                                                <input type="hidden" name="USER_ID" id="USER_ID" value="<?php echo $_GET["USER_ID"]?>">  
+                                                <button type="submit"  name="bt_sendDep" id="bt_sendDep" class="btn btn-primary btn-block">  ADD </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </form>
+                    </div>
+                    <div class="col-md-auto w-50">
+                        <form id="frm_img" name="frm_img" method="post" action="../processControl/frm_process_staff.php" enctype="multipart/form-data">
+                            <section class="col">
+                                <div class="card card-primary">
+                                    <div class="card-header">
+                                        <h3 class="card-title">  เพิ่มสิทธิการใช้งาน  </h3>
                                     </div> 
-                                </div>  
-                                <div class="row form-group">
-                                    <div class="col-sm-12">
-                                        <input type="hidden" name="mode" id="mode" value="INDEPVIEW"> 
-                                        <input type="hidden" name="USER_ID" id="USER_ID" value="<?php echo $_GET["USER_ID"]?>">  
-                                        <button type="submit"  name="bt_sendDep" id="bt_sendDep" class="btn btn-primary btn-block">  ADD </button>
-                                    </div> 
-                                </div> 
-                            </div>  
-                    </section>  
-                </form> 
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <label>เพิ่มสาขาที่ดู</label>
+                                            </div>
+                                            <div class="col-md-auto pt-1">
+                                                <?php foreach ($conn->query($query_rbranch) as $dep) {
+                                                   $query_action   = " SELECT * from TB_USER_BRANCH where USERID = '".$USER_ID."' and FSCODE = '".$dep["BRCODE"]."'";  
+                                                    $getDep         = $conn_1->query($query_action);
+                                                    $DepData        = $getDep->fetch();
+                                                    
+                                                        if(isset($DepData["ID"])){
+                                                            $check  = "checked";
+                                                        }else{  $check  = "";}
+                                                    ?> 
+                                                    <p><input type="checkbox" id="breportview[]" name="breportview[]" <?php echo $check;?>  value="<?php echo $dep["BRCODE"];?>" style="width:20px; height:20px;"> <?php  echo $dep["BRCODE"]." ".$dep["FS_NAME"]?> </p>
+                                                <?php } ?> 
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-auto w-100">
+                                                <input type="hidden" name="mode" id="mode" value="BRANCHREPORT"> 
+                                                <input type="hidden" name="USER_ID" id="USER_ID" value="<?php echo $_GET["USER_ID"]?>">  
+                                                <button type="submit"  name="bt_sendDep" id="bt_sendDep" class="btn btn-primary btn-block">  ADD </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </form>
+                    </div>
+                </div>
+                
             <?php } ?>
         </section>
     

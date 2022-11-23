@@ -109,16 +109,34 @@
 
     if($mode == "INDEPVIEW"){
        
-        $userIDD            = $_POST["USER_ID"];  
-        for($ii=0; $ii < count($_POST["depview"]); $ii++){
-            $id_dep             = $_POST["depview"][$ii]; 
-            $action_in          = " INSERT INTO TB_ACTION (A_DEP,USERID,DATEREGISTER) ";
-            $action_in         .= " VALUES('".$id_dep."','".$userIDD."','".$date_today."')";
-            $action_insert      = $conn_1->query($action_in); 
+        $userIDD            = $_POST["USER_ID"]; 
+        if(isset($_POST["depview"])){
+            for($ii=0; $ii < count($_POST["depview"]); $ii++){
+                $id_dep             = $_POST["depview"][$ii]; 
+                $action_in          = " INSERT INTO TB_ACTION (A_DEP,USERID,DATEREGISTER) ";
+                $action_in         .= " VALUES('".$id_dep."','".$userIDD."','".$date_today."')";
+                $action_insert      = $conn_1->query($action_in); 
+            }
         }
-
         echo "<script>alert('Add Department success!');</script>";
-        echo "<script>location.replace('../administrator_sys/index.php');</script>";
+        echo "<script>location.replace('../administrator_sys/index.php?action=EDIT&USER_ID=".$userIDD."');</script>";
+    }
+
+    if($mode == "BRANCHREPORT"){
+       
+        $userIDD            = $_POST["USER_ID"]; 
+        $deletequery = "DELETE TB_USER_BRANCH WHERE USERID = '" .$userIDD. "'";
+        $actiondelete = $conn_1->query($deletequery);
+        if(isset($_POST["breportview"])){
+            for($ii=0; $ii < count($_POST["breportview"]); $ii++){
+                $id_dep             = $_POST["breportview"][$ii]; 
+                $action_in          = " INSERT INTO TB_USER_BRANCH (USERID,FSCODE,INS_DATE,INS_USER) ";
+                $action_in         .= " VALUES('".$userIDD."','".$id_dep."',GETDATE(),'".$_SESSION["USERID"]."')";
+                $action_insert      = $conn_1->query($action_in); 
+            }
+        }
+        echo "<script>alert('Add Branch success!');</script>";
+        echo "<script>location.replace('../administrator_sys/index.php?action=EDIT&USER_ID=".$userIDD."');</script>";
     }
 
     if ($mode == "INBANKOFSTATION") { 

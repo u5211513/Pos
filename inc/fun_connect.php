@@ -49,6 +49,22 @@
 		die(print_r($e->getMessage()));
 		//echo "No Connect"  .$dbName;
 	}
+
+	$serverName_AX 		= '192.168.2.196';
+	$userName_AX 		= 'sa';
+	$userPassword_AX 	= 'P@ssw0rd1';
+	$dbName_AX 			= 'AX50SP1_FAS';
+	
+	try{
+		$conn_AX = new PDO("sqlsrv:server=$serverName_AX ; Database = $dbName_AX", $userName_AX, $userPassword_AX);
+		$conn_AX->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		//echo "OK Connect" .$dbName;
+	}
+	catch(Exception $e){
+		die(print_r($e->getMessage()));
+		//echo "No Connect"  .$dbName;
+	}
+ 
  
 
 
