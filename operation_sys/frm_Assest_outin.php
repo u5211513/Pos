@@ -82,7 +82,7 @@
                                                         $dateclose  = " <button type=\"button\" name=\"add\" id=\"add\" data-toggle=\"modal\" data-target=\"#add_data_Modal_re\" class=\"btn btn-warning\" onClick=\"clickchange(".$assest["ASSESTDOC_ID"].")\"> 
                                                         <i class=\"fas fa-outdent\" title=\"รับคืนทรัพย์สิน\" style=\"color:#FF0000; font-size:20px;\"></i></button> ";
                                                     }
-                                                    if(isset($doc_out)){
+                                                    if(isset($doc_data["DATE_OUT"])){
                                                         $doc_out        = date("d/m/Y H:i:s" , strtotime($doc_data["DATE_OUT"]));
                                                     }else{ $doc_out     = "";} 
                                                 }else{ 

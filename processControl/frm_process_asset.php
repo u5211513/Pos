@@ -172,13 +172,13 @@ if($_POST["mode"] == "InsertASS"){
     $stmt_upassest->execute(['USERIN_ID','DATE_IN','DATE_EM_STOP'] );
  
 
-    /*$query_assused      = " SELECT * from TB_ASSESTUSED  where USERID = '".$resin."' "; 
+    $query_assused      = " SELECT * from TB_ASSESTUSED  where USERID = '".$resin."' AND ASSESTDOC_ID = '".$ASSESTID."' "; 
     foreach ($conn_1->query($query_assused) as $assest) { 
         $sql_assest       = " UPDATE TB_ASSEST SET  STATUS  = '".$status."' WHERE ASSESTID = '".$assest["ASSESTID"]."'  ";
         $stmt_up         = $conn_1->prepare($sql_assest);
         $stmt_up->execute(['STATUS', 'ASSESTID'] );
         
-    }*/
+    }
 
     $query_ass          = " SELECT * from TB_ASSESTDOC  where USERID = '".$resin."'  ORDER BY  ASSESTDOC_ID  DESC ";  
     $ass_res            = $conn_1->query( $query_ass ); 

@@ -23,7 +23,8 @@
 
     $query_assest   = " SELECT  * from TB_ASSESTUSED a 
                             inner join TB_ASSEST b on a.ASSESTID = b.ASSESTID
-                            inner join TB_USER c on a.USERID = c.USERID  
+                            inner join TB_USER c on a.USERID = c.USERID 
+                            INNER JOIN TB_ASSESTDOC d ON a.ASSESTDOC_NO = d.ASSESTDOC_NO 
                             WHERE a.ASSESTID = '". $item."'
                             ORDER BY  c.USERID  DESC "; 
 
@@ -74,7 +75,6 @@
                                     <?php   
                                         $no=1;
                                         foreach ($conn_1->query($query_assest) as $assest) {  
-                                             
                                             if(isset($assest["DATE_EM_STOP"] )){
                                                 $date_em_stop   = date("d/m/Y", strtotime($assest["DATE_EM_STOP"]));
                                             }else{ $date_em_stop   =" <i class=\"fas fa-toggle-on\" style=\"color:#66BFBF; font-size:30px;\"></i>";}

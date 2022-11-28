@@ -27,7 +27,36 @@ if ($_POST["mode"] == "CK_REPORT" || $_GET["mode"] == "CK_REPORT") {
 
     $fs_code_nno    = "'555555555555','666666666666', '777777777777', '888888888888', '444444444444','333333333333','999999FD','999999SX','999999RH','999999TP'";
     if ($start != ""  &&  $stop != "") {
-        $sql = " SELECT     
+        $sql = @" SELECT 
+        k.FSCODE,
+        k.BILLDATE,
+        k.P01_CASH_AMOUNT,
+        SUM(k.CN) AS CN,
+        k.Yingchaiyingdai,
+        k.P02_Credit,
+        k.CN_VISA,
+        k.P03_COUNPON,
+        k.P04_Transfer,
+        k.P06_Charge,
+        k.P07_BL_Deptamount,
+        k.P08_NO_BL_Deptmaount,
+        k.P09_DISCOUNT_1,
+        k.P12_QR_PAYMENT,
+        k.P13_DR_AMOUNT,
+        k.P14_SHIPPINGFREE,
+        k.P15_Yingchaiyingdai,
+        k.DISCOUNT,
+        k.P16_Health_AMOUNT,
+        k.P17_GoodDoctor,
+        k.P18_Doctor_A_Z,
+        k.P19_Pharmcare,
+        k.P20_DoctorAnyware,
+        k.P21_FOODPANDA,
+        k.P22_SKINX,
+        k.P23_Robinhood,
+        k.P24_Telephamacy 
+    FROM
+    (SELECT     
                 BT.FSCODE, 
                 BT.BILLDATE, 
                 SUM(BT.CASHAMT) AS P01_CASH_AMOUNT, 
@@ -80,10 +109,37 @@ if ($_POST["mode"] == "CK_REPORT" || $_GET["mode"] == "CK_REPORT") {
                 AND (BT.CUSTCOD Not in ($fs_code_nno)) 
                 and convert(date,bt.BILLDATE,103) between  '" . $start . "' and '" . $stop . "'  
                 GROUP BY d.Amount_DP, BT.FSCODE, BT.BILLDATE, y.TOTPRC, CN.TOTRECV, SR.TOTRECV, a.P04_Transfer_amount, ib.P07_DEPAMT, DR.CASH_AMOUNT,HR.CASH_AMOUNT,
-                GF.CASH_AMOUNT,AZ.CASH_AMOUNT,PM.CASH_AMOUNT,DA.CASH_AMOUNT,FD.CASH_AMOUNT,SX.CASH_AMOUNT,RB.CASH_AMOUNT,TP.CASH_AMOUNT 
-                order by BT.FSCODE ASC , BT.BILLDATE ASC
+                GF.CASH_AMOUNT,AZ.CASH_AMOUNT,PM.CASH_AMOUNT,DA.CASH_AMOUNT,FD.CASH_AMOUNT,SX.CASH_AMOUNT,RB.CASH_AMOUNT,TP.CASH_AMOUNT) k
+                GROUP BY
+                k.FSCODE,
+                k.BILLDATE,
+                k.P01_CASH_AMOUNT,
+                k.Yingchaiyingdai,
+                k.P02_Credit,
+                k.CN_VISA,
+                k.P03_COUNPON,
+                k.P04_Transfer,
+                k.P06_Charge,
+                k.P07_BL_Deptamount,
+                k.P08_NO_BL_Deptmaount,
+                k.P09_DISCOUNT_1,
+                k.P12_QR_PAYMENT,
+                k.P13_DR_AMOUNT,
+                k.P14_SHIPPINGFREE,
+                k.P15_Yingchaiyingdai,
+                k.DISCOUNT,
+                k.P16_Health_AMOUNT,
+                k.P17_GoodDoctor,
+                k.P18_Doctor_A_Z,
+                k.P19_Pharmcare,
+                k.P20_DoctorAnyware,
+                k.P21_FOODPANDA,
+                k.P22_SKINX,
+                k.P23_Robinhood,
+                k.P24_Telephamacy 
+            order by k.FSCODE ASC , k.BILLDATE ASC
             ";
-
+        //echo $sql;
         $getRes = $conn->prepare($sql);
         $getRes->execute();
     }

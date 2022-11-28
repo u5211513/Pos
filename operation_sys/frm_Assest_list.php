@@ -94,7 +94,7 @@
                                             
                                              
 
-                                            if(isset($user_data["FULLNAME"])){
+                                            if(isset($user_data["FULLNAME"]) && $assest["STATUS"] <> "2"){
                                                
                                                 $employeeU   = $user_data["FULLNAME"];
                                             }else{
