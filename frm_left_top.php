@@ -55,12 +55,6 @@
                                             <p> รายงาน Sale Incentive</p>
                                         </a>
                                     </li>
-                                    <li class="nav-item">
-                                        <a href="../Report_PO_PA/" class="nav-link">
-                                            <i class="fas fa-copy nav-icon"></i>
-                                            <p> รายงานเปรียบเทียบการสั่ง PO PA</p>
-                                        </a>
-                                    </li>
                                 </ul>
                             </li> 
                     <?php }elseif($DEPARTCODE == 02){  //  Account?>
@@ -174,6 +168,23 @@
                                 <p>  <span class="right"> รายงานเลขที่เอกสาร </span> </p>
                             </a>
                         </li> 
+                    <?php }elseif($DEPARTCODE == "AM"){ //administrator?>
+                        <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon fas fa-tree"></i>
+                                    <p> REPORT
+                                        <i class="fas fa-angle-left right"></i>
+                                    </p>
+                                </a> 
+                                <ul class="nav nav-treeview">   
+                                    <li class="nav-item">
+                                        <a href="../Report_PO_PA/" class="nav-link">
+                                            <i class="fas fa-copy nav-icon"></i>
+                                            <p> รายงานเปรียบเทียบการสั่ง PO PA</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>     
                     <?php }elseif($DEPARTCODE == "DP01"){ // Admin IT?>
                         <li class="nav-item">
                             <a href="frm_Assest_list.php" class="nav-link">

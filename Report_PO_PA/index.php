@@ -34,8 +34,12 @@ $exsql->execute();
                             <div class="row form-group">
                                 <div class="col-md-auto p-1">สาขา :
                                 <select id="branch" name="branch">
-                                    <?php while ($result = $exsql->fetch(PDO::FETCH_ASSOC)) { ?>
-                                        <option selected value='<?php echo $result["FSCODE"];?>'><?php echo $result["FSCODE"];?></option>
+                                    <?php while ($result = $exsql->fetch(PDO::FETCH_ASSOC)) { 
+                                        $sqlbranch   = " SELECT * from SET_BRANCH where BRCODE = '".$result["FSCODE"]."'";  
+                                        $getbranch         = $conn->query($sqlbranch);
+                                        $branchdata        = $getbranch->fetch();
+                                    ?>
+                                        <option selected value='<?php echo $result["FSCODE"];?>'><?php echo $result["FSCODE"];?> <?php echo $branchdata["FS_NAME"];?></option>
                                     <?php } ?>
                                 </select> 
                                 </div>
@@ -95,31 +99,36 @@ $exsql->execute();
     $("#div_keyreport").hide();
     $("#load").hide();
     $("#bt_send").click(function() {
-        $("#div_keyreport").hide();
-        $("#load").show();
-        let userID  = '<?php echo $USERIDS;?>';
-        let username  = '<?php echo $USERNAMES;?>';
-        let monthselected   = $('#monthselected').val();
-        let branch    = $('#branch').val(); 
-        let yearselected    = $('#yearselected').val(); 
-            var myData = '&branch=' + branch +
-                '&monthselected=' + monthselected +
-                '&yearselected=' + yearselected +
-                '&userID=' + userID +
-                '&username=' + username
-            //alert(myData); 
-            jQuery.ajax({
-                url: "../processControl/frm_process_PO_PA.php",
-                data: myData,
-                type: "POST",
-                dataType: "text",
-                success: function(data) { 
-                    $("#div_keyreport").html(data);
-                    $("#div_keyreport").show();
-                    $("#div_keyin").hide();
-                    $("#load").hide();
-                }
-            });
+        if($('#branch').val() == null || $('#branch').val() == ""){
+            alert("กรุณาเลือกสาขา");
+        }else{
+            $("#div_keyreport").hide();
+            $("#load").show();
+            let userID  = '<?php echo $USERIDS;?>';
+            let username  = '<?php echo $USERNAMES;?>';
+            let monthselected   = $('#monthselected').val();
+            let branch    = $('#branch').val(); 
+            let yearselected    = $('#yearselected').val(); 
+                var myData = '&branch=' + branch +
+                    '&monthselected=' + monthselected +
+                    '&yearselected=' + yearselected +
+                    '&userID=' + userID +
+                    '&username=' + username
+                //alert(myData); 
+                jQuery.ajax({
+                    url: "../processControl/frm_process_PO_PA.php",
+                    data: myData,
+                    type: "POST",
+                    dataType: "text",
+                    success: function(data) { 
+                        $("#div_keyreport").html(data);
+                        $("#div_keyreport").show();
+                        $("#div_keyin").hide();
+                        $("#load").hide();
+                    }
+                });
+        }
+        
     }); 
 </script>
  

@@ -48,6 +48,8 @@ $DEPCODE            = "";
                 echo "<script>location.replace('../account_sys/index.php');</script>";  
             }else  if($DEPCODE  ==  03){ 
                 echo "<script>location.replace('../administrator_sys/index.php');</script>";  
+            }else  if($DEPCODE  ==  "AM"){ 
+                echo "<script>location.replace('../Report_PO_PA/index.php');</script>";  
             }else{
                 echo "<script>location.replace('../operation_sys/index.php');</script>"; 
             } 

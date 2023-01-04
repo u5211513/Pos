@@ -23,7 +23,12 @@
         $email      = $_POST["email"];
         $IDNO       = $_POST["IDNO"];
         $dep        = $_POST["dep"]; 
-        $branch     = $_POST["branch"];
+        $branch     = null;
+        if($_POST["branch"] == ""){
+            $branch = null;
+        }else{
+            $branch = $_POST["branch"];
+        }
         $POSITIONID = $_POST["POSITIONID"];  
         $COMPANYID  = $_POST["COMPANYID"]; 
         $dateStart  = $_POST["DATE_START"];
@@ -54,7 +59,7 @@
 
         $date_cur       = date("Y-m-d H:i:s");
         $sel_in         = " INSERT INTO TB_USER (USERNAME ,PASSWORD , FULLNAME ,FSCODE  , POSITIONID , DATEREGISTER ,DATE_LAST ,IPADDRESS_LAST ,STATUS, COMPANYID,DEPTID , IDNO , DATE_START) ";
-        $sel_in         .= " VALUES('".$username."' ,'".$password."' , '".$fullname."' ,'".$branch."'  ,'". $POSITIONID."', '".$date_cur."','".$date_cur."','".$ipaddress."','Y' , '".$COMPANYID."', '".$dep."','".$username."', '".$dateStart."')";
+        $sel_in         .= " VALUES('".$username."' ,'".$password."' , '".$fullname."' ,'".$branch."'  ,'". $POSITIONID."', '".$date_cur."','".$date_cur."','".$ipaddress."','Y' , '".$COMPANYID."', '".$dep."','".$IDNO."', '".$dateStart."')";
         $res_insert      = $conn_1->query($sel_in); 
          
         // $query_maxused = " SELECT MAX(USERID) AS USERM from TB_USER ";   
@@ -64,7 +69,6 @@
         // $action_in         = " INSERT INTO TB_ACTION (A_Create,A_Edit,A_No,A_Report,USERID,DATEREGISTER) ";
         // $action_in         .= " VALUES('".$a_create."','".$a_edit."','".$a_no."','".$view."','".$user_data["USERM"]."','".$date_cur."')";
         // $action_insert      = $conn_1->query($action_in); 
-   
         $aaction         = " เพิ่มพนักงาน"; 
         include("frm_memberLog.php");      
 

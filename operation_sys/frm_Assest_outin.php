@@ -60,6 +60,7 @@
                                         <tr>
                                             <th>#</th>
                                             <th> Doc </th>
+                                            <th>Categorites</th> 
                                             <th>รายการทรัพย์สิน</th> 
                                             <th> Detail </th>
                                             <th>วันที่เพิ่มทรัพย์สิน</th>
@@ -89,10 +90,16 @@
                                                     $doc_out     = "";
                                                     $dateclose   = "";
                                                 } 
+                                                $cata       = " SELECT b.* FROM TB_ASSEST a
+                                                                INNER JOIN TB_CATEGORIES b ON a.CATEGORIESID = b.CATEGORIESID
+                                                                WHERE a.ASSESTID = '".$assest["ASSESTID"]."'";  
+                                                $getcata          = $conn_1->query($cata);
+                                                $cata_data        = $getcata->fetch(); 
                                                 ?>
                                             <tr>
                                                 <td><?php echo $r;?></td>
                                                 <td><?php echo $assest["ASSESTDOC_NO"];?></td>
+                                                <td><?php echo $cata_data["CATEGORIESNAME"];?></td>
                                                 <td><?php echo $assest["ITEMNAME"];?></td> 
                                                 <td><?php echo $assest["DETAIL"];?></td>
                                                 <td><?php echo date("d/m/Y H:i:s" , strtotime($assest["CREATE_DATE"]));?></td>
@@ -271,7 +278,9 @@
         event.preventDefault();  
         if($('#ASSESTID').val() == ""){  
             alert("เลือกทรัพย์สิน");  
-        }  else   {  
+        }else if($('#STATUSID').val() == ""){
+            alert("เลือกสถานะ"); 
+        } else   {  
             $.ajax({  
                 url:"../processControl/frm_process_asset.php",  
                 method:"POST",  

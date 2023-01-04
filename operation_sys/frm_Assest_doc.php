@@ -22,7 +22,9 @@
     $getUser          = $conn_1->query($query_user);
     $user_data        = $getUser->fetch();
  
-
+    $sql_position = "select * from TB_POSITION where POSITIONID = '".$user_data["POSITIONID"]."'";
+    $getpo = $conn_1->query($sql_position);
+    $position = $getpo->fetch();
    
     
     if($doc_data["CUT"] == "Y"){ 
@@ -32,7 +34,7 @@
     }
 
 
-    $query_used     = " SELECT  * from TB_ASSESTUSED a inner join TB_ASSESTDOC b on a.USERID = b.USERID   
+    $query_used     = " SELECT  * from TB_ASSESTUSED a inner join TB_ASSESTDOC b on a.USERID = b.USERID  INNER JOIN TB_ASSEST c ON a.ASSESTID = c.ASSESTID INNER JOIN TB_CATEGORIES d ON c.CATEGORIESID = d.CATEGORIESID
                         WHERE  a.USERID = '". $userrr__d."'  and  a.ASSESTDOC_ID = '".$doccc_d."' and a.ASSESTDOC_ID = b.ASSESTDOC_ID 
                         ORDER BY ASSEST_USEDID DESC"; 
  
@@ -165,7 +167,7 @@
             </tr>
             <tr>
                 <td>ตําแหน่ง  :</td>
-                <td><u><?php echo $user_data["POSITION"];?></u></td>
+                <td><u><?php echo $position["POSITION_NAME"];?></u></td>
                 <td>รหัสตําแหน่ง : </td>
                 <td><u><?php echo "";?></u></td>
             </tr>
@@ -184,6 +186,7 @@
                 <table width="100%" class="fontall tableall"> 
                     <tr>
                         <td>  #</td> 
+                        <td>Categorites</td>
                         <td>Name </td> 
                         <td>Serial Number</td>
                         <td>Asset Number</td>
@@ -198,6 +201,7 @@
                     ?>
                     <tr>
                         <td> <?php echo $no;?></td> 
+                        <td> <?php echo $assest["CATEGORIESNAME"];?></td> 
                         <td> <?php echo $assest_data["ITEMNAME"];?></td> 
                         <td><?php echo $assest_data["SERIAL_NUMBER"];?></td>
                         <td><?php echo $assest_data["ASSEST_NO"];?></td>
@@ -272,7 +276,7 @@
         <table width="900px" align="center" style="line-height:30px;" class="fontall">
             <tr>
                 <td> <img src="../dist/img/fashof.jpg" width="180"></td>
-                <td  colspan="2" align="center"> เอกสารสิทธิ์การเขา้ใชง้านของแผนก IT
+                <td  colspan="2" align="center"> เอกสารสิทธิ์การเข้าใช้งานของแผนก IT
                     
                 </td>
                 <td align="right" > <span class="fonttop"> Doc No. : <?php echo $doc_data["ASSESTDOC_NO"];?></span></td>
@@ -295,7 +299,7 @@
             </tr>
             <tr>
                 <td>ตําแหน่ง  :</td>
-                <td><u><?php echo $user_data["POSITION"];?></u></td>
+                <td><u><?php echo $position["POSITION_NAME"];?></u></td>
                 <td>รหัสตําแหน่ง : </td>
                 <td><u><?php echo "";?></u></td>
             </tr>

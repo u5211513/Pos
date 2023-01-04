@@ -25,12 +25,12 @@ if ($_POST["mode"] == "CK_REPORT" || $_GET["mode"] == "CK_REPORT") {
         $stop      =  $date_stop;
     }
 
-    $fs_code_nno    = "'555555555555','666666666666', '777777777777', '888888888888', '444444444444','333333333333','999999FD','999999SX','999999RH','999999TP'";
+    $fs_code_nno    = "'555555555555','666666666666', '777777777777', '888888888888', '444444444444','333333333333','999999FD','999999SX','999999RH','999999TP','999999GM'";
     if ($start != ""  &&  $stop != "") {
         $sql = @" SELECT 
         k.FSCODE,
         k.BILLDATE,
-        k.P01_CASH_AMOUNT,
+        (k.P01_CASH_AMOUNT - k.P26_DEPOSIT) AS P01_CASH_AMOUNT,
         SUM(k.CN) AS CN,
         k.Yingchaiyingdai,
         k.P02_Credit,
@@ -54,7 +54,8 @@ if ($_POST["mode"] == "CK_REPORT" || $_GET["mode"] == "CK_REPORT") {
         k.P21_FOODPANDA,
         k.P22_SKINX,
         k.P23_Robinhood,
-        k.P24_Telephamacy 
+        k.P24_Telephamacy,
+        k.P25_Grab
     FROM
     (SELECT     
                 BT.FSCODE, 
@@ -83,8 +84,9 @@ if ($_POST["mode"] == "CK_REPORT" || $_GET["mode"] == "CK_REPORT") {
                 ISNULL(FD.CASH_AMOUNT, '0')  AS P21_FOODPANDA,
                 ISNULL(SX.CASH_AMOUNT, '0')  AS P22_SKINX,
                 ISNULL(RB.CASH_AMOUNT, '0')  AS P23_Robinhood,
-                ISNULL(TP.CASH_AMOUNT, '0')  AS P24_Telephamacy
-                
+                ISNULL(TP.CASH_AMOUNT, '0')  AS P24_Telephamacy,
+                ISNULL(GB.CASH_AMOUNT, '0')  AS P25_Grab,
+		        ISNULL( DP.CASH_AMOUNT, '0' ) AS P26_DEPOSIT
                 FROM            dbo.BILLMAST AS BT 
                 LEFT OUTER JOIN   dbo.View_CN AS CN ON CN.DOCMDATE = BT.BILLDATE AND CN.FSCODE = BT.FSCODE 
                 LEFT OUTER JOIN  dbo.View_Interledger_SR AS SR ON SR.DOCMDATE = BT.BILLDATE AND SR.FSCODE = BT.FSCODE 
@@ -102,14 +104,16 @@ if ($_POST["mode"] == "CK_REPORT" || $_GET["mode"] == "CK_REPORT") {
                 LEFT OUTER JOIN  dbo.VIEW_SKINX AS SX ON SX.DOCMDATE = BT.BILLDATE AND SX.FSCODE = BT.FSCODE 
                 LEFT OUTER JOIN  dbo.View_Robinhood AS RB ON RB.DOCMDATE = BT.BILLDATE AND RB.FSCODE = BT.FSCODE 
                 LEFT OUTER JOIN  dbo.View_Telephamacy AS TP ON TP.DOCMDATE = BT.BILLDATE AND TP.FSCODE = BT.FSCODE 
-                
+                LEFT OUTER JOIN  dbo.VIEW_GRAB AS GB ON GB.DOCMDATE = BT.BILLDATE AND GB.FSCODE = BT.FSCODE 
+                LEFT OUTER JOIN dbo.VIEW_DEPOSIT AS DP ON BT.FSCODE = DP.FSCODE and BT.BILLDATE = DP.DEPDATE
                 WHERE  
                 (LEFT(BT.BILLNO, 2) IN ('T1'))
                 $sql_br_ck
                 AND (BT.CUSTCOD Not in ($fs_code_nno)) 
                 and convert(date,bt.BILLDATE,103) between  '" . $start . "' and '" . $stop . "'  
                 GROUP BY d.Amount_DP, BT.FSCODE, BT.BILLDATE, y.TOTPRC, CN.TOTRECV, SR.TOTRECV, a.P04_Transfer_amount, ib.P07_DEPAMT, DR.CASH_AMOUNT,HR.CASH_AMOUNT,
-                GF.CASH_AMOUNT,AZ.CASH_AMOUNT,PM.CASH_AMOUNT,DA.CASH_AMOUNT,FD.CASH_AMOUNT,SX.CASH_AMOUNT,RB.CASH_AMOUNT,TP.CASH_AMOUNT) k
+                GF.CASH_AMOUNT,AZ.CASH_AMOUNT,PM.CASH_AMOUNT,DA.CASH_AMOUNT,FD.CASH_AMOUNT,SX.CASH_AMOUNT,RB.CASH_AMOUNT,TP.CASH_AMOUNT,GB.CASH_AMOUNT,
+                DP.CASH_AMOUNT) k
                 GROUP BY
                 k.FSCODE,
                 k.BILLDATE,
@@ -136,10 +140,13 @@ if ($_POST["mode"] == "CK_REPORT" || $_GET["mode"] == "CK_REPORT") {
                 k.P21_FOODPANDA,
                 k.P22_SKINX,
                 k.P23_Robinhood,
-                k.P24_Telephamacy 
+                k.P24_Telephamacy,
+                k.P25_Grab,
+                k.P26_DEPOSIT
             order by k.FSCODE ASC , k.BILLDATE ASC
             ";
-        //echo $sql;
+        echo $sql;
+        die();
         $getRes = $conn->prepare($sql);
         $getRes->execute();
     }
@@ -170,6 +177,7 @@ if ($_POST["mode"] == "CK_REPORT" || $_GET["mode"] == "CK_REPORT") {
     $sum_P22    =  0;
     $sum_P23    =  0;
     $sum_P24    =  0;
+    $sum_P25    =  0;
     $bill_amount = 0;
     $diff_amount    = 0;
     $diff_amountAll = 0;
@@ -222,6 +230,7 @@ if ($_POST["mode"] == "CK_REPORT" || $_GET["mode"] == "CK_REPORT") {
                     <th>SKIN X</th><!-- P22-->
                     <th>Robinhood</th><!-- P23-->
                     <th>Telepharmacy</th> <!-- P24-->
+                    <th>Grab</th> <!-- P25-->
                 </tr>
             </thead>
             <tbody>
@@ -381,9 +390,14 @@ if ($_POST["mode"] == "CK_REPORT" || $_GET["mode"] == "CK_REPORT") {
                         } else {
                             $P_24 = "0";
                         }
-
-                        $amount         = $P_01 + $P_02 + $P_03 + $P_04 + $P_06 + $P_07 + $P_08 + $P_09 + $P_12 + $P_13 + $P_14 + $P_15 + $P_16 + $P_17 + $P_18 + $P_19 + $P_20 + $P_21 + $P_22 + $P_23 + $P_24;
-                        $diff_amount    = $P_01 - $bill_amount;
+                        if ($row['P25_Grab'] != "") {
+                            $P_25 = $row['P25_Grab'];
+                        } else {
+                            $P_25 = "0";
+                        }
+                        
+                        $amount         = $P_01 + $P_02 + $P_03 + $P_04 + $P_06 + $P_07 + $P_08 + $P_09 + $P_12 + $P_13 + $P_14 + $P_15 + $P_16 + $P_17 + $P_18 + $P_19 + $P_20 + $P_21 + $P_22 + $P_23 + $P_24 + $P_25;
+                        $diff_amount    = ($P_01+ $P_07) - $bill_amount;
                         $diff_amountAll += $diff_amount;
                         $sum_amount     += $amount;
 
@@ -408,6 +422,7 @@ if ($_POST["mode"] == "CK_REPORT" || $_GET["mode"] == "CK_REPORT") {
                         $sum_P22        += $P_22;
                         $sum_P23        += $P_23;
                         $sum_P24        += $P_24;
+                        $sum_P25        += $P_25;
                         
                 
 
@@ -480,6 +495,7 @@ if ($_POST["mode"] == "CK_REPORT" || $_GET["mode"] == "CK_REPORT") {
                         <td><?php echo number_format($P_22, 2); ?></td>
                         <td><?php echo number_format($P_23, 2); ?></td>
                         <td><?php echo number_format($P_24, 2); ?></td>
+                        <td><?php echo number_format($P_25, 2); ?></td>
                     </tr> 
                 <?php  
                     $i_r++; 
@@ -515,6 +531,7 @@ if ($_POST["mode"] == "CK_REPORT" || $_GET["mode"] == "CK_REPORT") {
                     <td>".number_format($sum_P22, 2)."</td>
                     <td>".number_format($sum_P23, 2)."</td>
                     <td>".number_format($sum_P24, 2)."</td>
+                    <td>".number_format($sum_P25, 2)."</td>
                 </tr>"; 
                 ?>  
             </tbody> 

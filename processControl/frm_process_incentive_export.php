@@ -52,8 +52,8 @@ if($typereport == 'Detail'){
 }else{
     $sql = @"SELECT
                 a.SALE_NEW,
-                (SELECT cast(ISNULL(SUM(b.INC_QTY), 0) as FLOAT)  FROM ViewBI_INCENTIVEOPTF1_CALINCENTEIVE_BY_NORN b WHERE b.FSCODE = a.FSCODE AND b.MONTH_NAME = a.MONTH_NAME AND b.SALE_NEW = a.SALE_NEW AND b.Product_Type = 'HB' AND b.Status_type = a.Status_type) AS 'HB',
-                (SELECT cast(ISNULL(SUM(b.INC_QTY), 0) as FLOAT) FROM ViewBI_INCENTIVEOPTF1_CALINCENTEIVE_BY_NORN b WHERE b.FSCODE = a.FSCODE AND b.MONTH_NAME = a.MONTH_NAME AND b.SALE_NEW = a.SALE_NEW AND b.Product_Type = 'YP' AND b.Status_type = a.Status_type) AS 'YP'
+                (SELECT cast(ISNULL(SUM(b.INC_QTY), 0) as FLOAT)  FROM ViewBI_INCENTIVEOPTF1_CALINCENTEIVE_BY_NORN b WHERE b.FSCODE = a.FSCODE AND b.MONTH_NAME = a.MONTH_NAME AND b.SALE_NEW = a.SALE_NEW AND b.YEARS = a.YEARS AND b.Product_Type = 'HB' AND b.Status_type = a.Status_type) AS 'HB',
+                (SELECT cast(ISNULL(SUM(b.INC_QTY), 0) as FLOAT) FROM ViewBI_INCENTIVEOPTF1_CALINCENTEIVE_BY_NORN b WHERE b.FSCODE = a.FSCODE AND b.MONTH_NAME = a.MONTH_NAME AND b.SALE_NEW = a.SALE_NEW AND b.YEARS = a.YEARS AND b.Product_Type = 'YP' AND b.Status_type = a.Status_type) AS 'YP'
               FROM
                 ViewBI_INCENTIVEOPTF1_CALINCENTEIVE_BY_NORN a
               WHERE
@@ -61,7 +61,7 @@ if($typereport == 'Detail'){
                 AND a.MONTH_NAME = '" . $_POST["monthselected"] . @"' 
                 AND a.YEARS = '" . $_POST["yearselected"] . @"' 
                 AND a.Status_type = '" . $_POST["statusselected"] . @"'
-              GROUP BY a.SALE_NEW,a.FSCODE,a.Status_type,a.MONTH_NAME
+              GROUP BY a.SALE_NEW,a.FSCODE,a.Status_type,a.YEARS,a.MONTH_NAME
               ORDER BY a.SALE_NEW";
     $exsql = $conn->prepare($sql);
     $exsql->execute();
